@@ -7,6 +7,18 @@ const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 const config = require('./config.js');
 
+exports.local = passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+exports.getToken = function (user) {
+    return jwt.sign(user, config.secretKey, { expiresIn: 3600 });
+};
+
+const opts = {};
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = config.secretKey;
+
 
 exports.jwtPassport = passport.use(
     new JwtStrategy(
