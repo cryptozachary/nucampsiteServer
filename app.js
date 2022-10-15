@@ -12,6 +12,8 @@ const promotionRouter = require('./routes/promotionRouter');
 const partnerRouter = require('./routes/partnerRouter');
 
 const mongoose = require('mongoose');
+const { authenticate } = require('passport');
+const { verifyUser, verifyAdmin } = require('./authenticate');
 
 
 const url = config.mongoUrl;

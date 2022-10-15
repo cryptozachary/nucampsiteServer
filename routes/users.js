@@ -5,8 +5,11 @@ const authenticate = require('../authenticate');
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
+router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+  if (req.user.admin) {
+    return res.send(req.user);
+  }
+  res.send("You are unauthorized!!")
 });
 
 router.post('/signup', (req, res) => {
