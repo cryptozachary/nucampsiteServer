@@ -42,7 +42,7 @@ exports.verifyUser = passport.authenticate('jwt', { session: false });
 
 exports.verifyAdmin = (req, res, next) => {
 
-    if (req.user.admin === true) {
+    if (req.user.admin) {
         next();
     } else {
         const err = new Error('You are not authorized to perform this operation!');
