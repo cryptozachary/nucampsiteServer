@@ -44,10 +44,10 @@ favoriteRouter.route('/')
                 if (favorite) {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
-                    res.json(favorite);
+                    return res.json(favorite);
                 } else {
                     res.setHeader('Content-Type', 'text/plain');
-                    res.end('You do not have any favorites to delete')
+                    return res.end('You do not have any favorites to delete')
                 }
             })
             .catch(err => next(err));
@@ -62,18 +62,18 @@ favoriteRouter.route('/:campsiteId')
     .post(authenticate.verifyUser, (req, res) => {
         Favorite.findOne()
             .then(favorite => {
-                let exist = favorite.campsite.includes(req.params.campsiteId)
+                let exist = favorite.campsites.id(req.params.campsiteId)
                 if (!exist) {
-                    favorite.campsite.push(req.body);
-                    favorite.save()
-                        .then(favorite => {
-                            res.statusCode = 200;
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json(favorite);
-                        })
+                    favorite.campsites.push(req.body);
+                    return favorite.save()
                 } else {
-                    res.send("That campsite is already in the list of favorites!")
+                    return res.send("That campsite is already in the list of favorites!")
                 }
+            })
+            .then(favorite => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(favorite);
             })
             .catch(err => next(err));
     })
@@ -85,19 +85,20 @@ favoriteRouter.route('/:campsiteId')
         Favorite.findOne()
             .then(favorite => {
                 if (favorite) {
-                    let newArray = favorite.campsite.filter(fav => {
-                        return fav == req.params.campsiteId
+                    let newArray = favorite.campsites.filter(fav => {
+                        return !fav.equals(req.params.campsiteId)
                     })
-                    favorite.save()
-                        .then(favorite => {
-                            res.statusCode = 200;
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json(favorite);
-                        })
+                    favorite.campsites = newArray
+                    return favorite.save()
                 } else {
                     res.setHeader('Content-Type', 'text/plain');
-                    res.end('There are no favorites to delete')
+                    return res.end('There are no favorites to delete')
                 }
+            })
+            .then(favorite => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(favorite);
             })
             .catch(err => next(err));
     });

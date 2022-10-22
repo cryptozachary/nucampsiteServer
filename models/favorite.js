@@ -6,11 +6,11 @@ require('mongoose-currency').loadType(mongoose);
 const favoriteSchema = new Schema({
     user: {
         type: mongoose.Types.ObjectId,
-        ref: 'user'
+        ref: 'User'
     },
-    campsite: [{
+    campsites: [{
         type: mongoose.Types.ObjectId,
-        ref: 'campsite'
+        ref: 'Campsite'
     }]
 });
 
